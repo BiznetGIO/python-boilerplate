@@ -1,60 +1,11 @@
 version: '3'
 services:
-    rabbitmq:
-        image: rabbitmq:3-management
-        hostname: rabbitmq
-        environment:
-            RABBITMQ_DEFAULT_USER: "admin"
-            RABBITMQ_DEFAULT_PASS: "qazwsx"
-            RABBITMQ_DEFAULT_VHOST: "/"
-        user: nobody
-        ports:
-            - "15672:15672"
-            - "5672:5672"
+   
     monitor:
-        image: registry.gitlab.com/biznetgio/knot_monitor:latest
+        image: ./
         ports:
           - "6966:5000"
         environment:
-          - APP_HOST=0.0.0.0
-          - APP_PORT=5000
-          - DB_HOST=10.10.3.32
-          - DB_NAME=knotdb
-          - DB_PORT=26257
-          - DB_USER=root
-          - DB_PASSWORD=
-          - DB_SSL=disable
-          - CACHE_TYPE=simple
-          - CACHE_DEFAULT_TIMEOUT=900
-          - CELERY_BROKER_URL=amqp://admin:qazwsx@rabbitmq:5672//
-          - CELERY_RESULT_BACKEND=amqp://admin:qazwsx@rabbitmq:5672//
-          - ACL=127.0.0.1/24, 103.77.104.0/24, 172.22.0.1/24
-          - WORKER=2
-          - ENVIRONMENT=development
-          - COMMAND=server
+          
         command: ["sh","run.sh", "server", "production"]
-        links:
-          - "rabbitmq"
-
-    celery:
-        image: registry.gitlab.com/biznetgio/knot_monitor:latest
-        environment:
-          - C_FORCE_ROOT=true
-          - APP_HOST=0.0.0.0
-          - APP_PORT=5000
-          - DB_NAME=knotdb
-          - DB_HOST=10.10.3.32
-          - DB_PORT=26257
-          - DB_USER=root
-          - DB_PASSWORD=
-          - DB_SSL=disable
-          - CACHE_TYPE=simple
-          - CACHE_DEFAULT_TIMEOUT=900
-          - ACL=127.0.0.1/24, 103.77.104.0/24, 172.22.0.1/24
-          - CELERY_BROKER_URL=amqp://admin:qazwsx@rabbitmq:5672//
-          - CELERY_RESULT_BACKEND=amqp://admin:qazwsx@rabbitmq:5672//
-        command: ["sh", "celery.sh"]
-        links:
-          - "rabbitmq"
-
-    
+        
